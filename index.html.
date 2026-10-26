@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova Music</title>
+<style>
+:root{--bg:#08080d;--panel:#12121c;--purple:#9b5cff;--text:#fff;--muted:#aaa9bb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer;border:0;color:white}
+.app{display:flex;min-height:100vh;padding-bottom:100px}
+.sidebar{width:225px;background:#0d0d14;padding:25px 16px;flex-shrink:0}
+.logo{font-size:25px;font-weight:800;margin-bottom:35px}
+.logo span{color:var(--purple)}
+.nav{display:block;width:100%;padding:13px;text-align:left;background:transparent;color:var(--muted);border-radius:9px;margin:5px 0}
+.nav.active,.nav:hover{background:#242033;color:white}
+.side-title{color:#77758b;font-size:11px;letter-spacing:2px;margin:30px 10px 12px}
+main{padding:26px;width:100%;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:28px}
+.search{background:#191923;border:1px solid #292838;border-radius:30px;padding:13px 18px;color:white;width:min(100%,360px);outline:none}
+.pill{background:#201b30;padding:10px 15px;border-radius:25px;color:#d5baff}
+.hero{background:linear-gradient(115deg,#32185d,#17152a 65%,#11111a);padding:30px;border-radius:20px;margin-bottom:30px;position:relative;overflow:hidden}
+.hero small{color:#d6baff;letter-spacing:2px}
+.hero h1{font-size:clamp(30px,5vw,48px);margin:15px 0 8px}
+.hero p{color:#d0c8df;max-width:420px;line-height:1.5}
+.primary{background:var(--purple);padding:12px 20px;border-radius:25px;font-weight:bold}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:28px 0 15px}
+.section-head h2{font-size:20px;margin:0}
+.muted{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.card{background:var(--panel);padding:12px;border-radius:14px;cursor:pointer;min-width:0;transition:.2s}
+.card:hover{background:#222132;transform:translateY(-2px)}
+.cover{aspect-ratio:1;border-radius:10px;display:grid;place-items:center;font-size:45px;margin-bottom:12px;background:linear-gradient(135deg,#6130a4,#171426)}
+.cover.c2{background:linear-gradient(135deg,#a63875,#31172d)}
+.cover.c3{background:linear-gradient(135deg,#157b8d,#142638)}
+.cover.c4{background:linear-gradient(135deg,#bd7440,#3a2030)}
+.card strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card p{font-size:12px;color:var(--muted);margin:7px 0 3px}
+.tracks{display:flex;flex-direction:column;gap:4px}
+.track{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;cursor:pointer}
+.track:hover,.track.current{background:#1b1927}
+.track-cover{width:44px;height:44px;border-radius:8px;display:grid;place-items:center;background:#33214d;flex-shrink:0}
+.track-info{flex:1;min-width:0}
+.track-info strong,.track-info span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.track-info span{font-size:12px;color:var(--muted);margin-top:4px}
+.track button{background:transparent;color:#cfc9dc;padding:8px}
+.empty{color:var(--muted);padding:20px 0}
+.player{position:fixed;bottom:0;left:0;right:0;background:#14131d;border-top:1px solid #302b3d;min-height:84px;padding:12px 20px;display:grid;grid-template-columns:1fr 1.3fr 1fr;align-items:center;gap:18px;z-index:5}
+.now{display:flex;align-items:center;gap:10px;min-width:0}
+.now-cover{width:48px;height:48px;background:#392054;border-radius:8px;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.now-info{min-width:0}
+.now-info strong,.now-info span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.now-info span{font-size:12px;color:var(--muted);margin-top:4px}
+.controls{text-align:center}
+.control-buttons{display:flex;justify-content:center;align-items:center;gap:20px}
+.control-buttons button{background:transparent;font-size:20px;color:#ddd}
+.control-buttons .play{width:38px;height:38px;border-radius:50%;background:white;color:#111;font-size:17px}
+.progress{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:10px;color:var(--muted)}
+input[type=range]{accent-color:var(--purple);width:100%;cursor:pointer}
+.volume{display:flex;justify-content:flex-end;align-items:center;gap:10px}
+.notice{color:var(--muted);font-size:12px;line-height:1.5;margin-top:15px}
+@media(max-width:800px){.sidebar{width:72px;padding:18px 8px}.logo{font-size:0;text-align:center}.logo:first-letter{font-size:25px}.nav{font-size:0;text-align:center;padding:14px 4px}.nav:first-letter{font-size:19px}.side-title{font-size:0;margin:22px 0}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.player{grid-template-columns:1fr 1fr;padding:10px;gap:8px}.volume{display:none}.controls{grid-column:2;grid-row:1}.now{grid-column:1;grid-row:1}.control-buttons{gap:12px}.now-cover{width:40px;height:40px}.hero{padding:22px 18px}main{padding:18px 12px}.pill{display:none}}
+@media(max-width:390px){.now-info span{display:none}.control-buttons{gap:8px}.control-buttons button{font-size:17px}.player{padding:8px}.grid{gap:10px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="logo">♫ <span>Nova</span> Music</div>
+<button class="nav active" data-view="home">⌂ Acasă</button>
+<button class="nav" data-view="search">⌕ Caută</button>
+<button class="nav" data-view="library">▤ Biblioteca mea</button>
+<div class="side-title">COLECȚIA TA</div>
+<button class="nav" id="likedNav">♥ Melodii apreciate</button>
+<button class="nav" id="allNav">♫ Toate melodiile</button>
+<div class="side-title">NOVA MUSIC</div>
+<p class="notice">Muzică. Starea ta. Ritmul tău.</p>
+</aside>
+
+<main>
+<div class="top">
+<input id="search" class="search" placeholder="⌕  Caută melodii sau artiști..." aria-label="Caută melodii">
+<span class="pill">✦ NOVA MUSIC</span>
+</div>
+
+<section id="homeView">
+<div class="hero">
+<small>DESCOPERĂ-ȚI RITMUL</small>
+<h1>Muzica ta.<br>Regulile tale.</h1>
+<p>Descoperă melodiile tale preferate, creează playlisturi și ascultă în ritmul tău.</p>
+<button class="primary" id="startBtn">▶ Ascultă acum</button>
+</div>
+<div class="section-head"><h2>Explorează vibe-ul</h2><span class="muted">Nova picks</span></div>
+<div class="grid" id="genres"></div>
+<div class="section-head"><h2>Melodii demonstrative</h2><span class="muted">Apasă pentru redare</span></div>
+<div class="tracks" id="tracks"></div>
+<p class="notice">Această versiune conține piese demonstrative. Pentru muzică reală, conectează o sursă audio autorizată sau adaugă fișiere audio pe care ai dreptul să le folosești.</p>
+</section>
+
+<section id="resultsView" hidden>
+<div class="section-head"><h2 id="resultsTitle">Caută muzică</h2></div>
+<div class="tracks" id="results"></div>
+</section>
+
+<section id="libraryView" hidden>
+<div class="section-head"><h2>Biblioteca mea</h2></div>
+<p class="muted">Melodiile apreciate și playlisturile tale locale.</p>
+<div class="tracks" id="library"></div>
+</section>
+</main>
+</div>
+
+<div class="player">
+<div class="now">
+<div class="now-cover" id="nowCover">♫</div>
+<div class="now-info"><strong id="nowTitle">Alege o melodie</strong><span id="nowArtist">Nova Music</span></div>
+<button id="likeBtn" title="Apreciază melodia" style="background:transparent;color:#bfa0ff">♡</button>
+</div>
+<div class="controls">
+<div class="control-buttons">
+<button id="prevBtn" title="Melodia precedentă">⏮</button>
+<button id="playBtn" class="play" title="Redare">▶</button>
+<button id="nextBtn" title="Melodia următoare">⏭</button>
+</div>
+<div class="progress"><span id="elapsed">0:00</span><input type="range" id="seek" min="0" max="100" value="0" aria-label="Poziția melodiei"><span id="duration">0:00</span></div>
+</div>
+<div class="volume"><span>🔊</span><input type="range" id="volume" min="0" max="1" step="0.05" value="0.8" aria-label="Volum"></div>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+<script>
+const demo = [
+ {title:"Midnight Dreams",artist:"Nova Sessions",emoji:"🌙",color:"c1",url:""},
+ {title:"Purple Skies",artist:"Nova Sessions",emoji:"🌌",color:"c2",url:""},
+ {title:"Ocean Lights",artist:"Nova Sessions",emoji:"🌊",color:"c3",url:""},
+ {title:"Golden Hour",artist:"Nova Sessions",emoji:"🌅",color:"c4",url:""}
+];
+const audio = document.getElementById("audio");
+let current = -1, playing = false, liked = new Set(), query = "";
+const $ = id => document.getElementById(id);
+const fmt = s => {if(!Number.isFinite(s))return "0:00";return Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0")};
+function loadTrack(i,autoplay=true){
+ if(!demo.length)return;
+ current=(i+demo.length)%demo.length;
+ const t=demo[current];
+ $("nowTitle").textContent=t.title;$("nowArtist").textContent=t.artist;
+ $("nowCover").textContent=t.emoji;
+ $("likeBtn").textContent=liked.has(current)?"♥":"♡";
+ renderTracks();
+ if(t.url){audio.src=t.url;if(autoplay)play();}
+ else{audio.pause();playing=false;$("playBtn").textContent="▶";$("elapsed").textContent="0:00";$("duration").textContent="Demo";}
+}
+function play(){
+ if(current<0){loadTrack(0,false);}
+ const t=demo[current];
+ if(!t.url){alert("Aceasta este o piesă demonstrativă. Adaugă un fișier audio autorizat pentru a o reda.");return;}
+ audio.play().then(()=>{playing=true;$("playBtn").textContent="❚❚"}).catch(()=>alert("Nu s-a putut reda fișierul audio."));
+}
+function togglePlay(){if(playing){audio.pause();playing=false;$("playBtn").textContent="▶"}else play()}
+function renderTracks(list=demo,target="tracks"){
+ const el=$(target);el.innerHTML="";
+ const arr=list.map(t=>({t,i:demo.indexOf(t)})).filter(x=>x.i>=0);
+ if(!arr.length){el.innerHTML='<p class="empty">Nu am găsit melodii.</p>';return}
+ arr.forEach(({t,i})=>{
+  const row=document.createElement("div");row.className="track"+(i===current?" current":"");
+  row.innerHTML='<div class="track-cover">'+t.emoji+'</div><div class="track-info"><strong></strong><span></span></div><button title="Redare">▶</button><button title="Apreciază">'+(liked.has(i)?"♥":"♡")+'</button>';
+  row.querySelector("strong").textContent=t.title;row.querySelector("span").textContent=t.artist;
+  row.addEventListener("click",()=>loadTrack(i,true));
+  row.querySelectorAll("button")[1].addEventListener("click",e=>{e.stopPropagation();toggleLike(i);});
+  el.appendChild(row);
+ });
+}
+function renderGenres(){
+ const genres=[["🌙","Chill","c1"],["💜","Electronic","c2"],["🌊","Ambient","c3"],["✨","Feel good","c4"]];
+ $("genres").innerHTML="";
+ genres.forEach(([emoji,name,color],i)=>{
+ const card=document.createElement("div");card.className="card";
+ card.innerHTML='<div class="cover '+color+'">'+emoji+'</div><strong></strong><p>Descoperă atmosfera</p>';
+ card.querySelector("strong").textContent=name;
+ card.onclick=()=>{loadTrack(i,true)};
+ $("genres").appendChild(card);
+ });
+}
+function toggleLike(i){if(liked.has(i))liked.delete(i);else liked.add(i);$("likeBtn").textContent=liked.has(current)?"♥":"♡";renderTracks();if(!$("libraryView").hidden)renderLibrary();}
+function renderLibrary(){renderTracks(demo.filter(t=>liked.has(demo.indexOf(t))),"library");}
+function searchTracks(){
+ query=$("search").value.trim().toLowerCase();
+ $("homeView").hidden=!!query;$("resultsView").hidden=!query;
+ if(query){$("resultsTitle").textContent="Rezultate pentru: "+$("search").value;renderTracks(demo.filter(t=>(t.title+" "+t.artist).toLowerCase().includes(query)),"results");}
+}
+function view(name){
+ $("homeView").hidden=name!=="home";$("resultsView").hidden=name!=="search";$("libraryView").hidden=name!=="library";
+ document.querySelectorAll(".nav[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
+ if(name==="search"){$("search").focus();searchTracks()}
+ if(name==="library")renderLibrary();
+}
+document.querySelectorAll(".nav[data-view]").forEach(b=>b.addEventListener("click",()=>view(b.dataset.view)));
+$("search").addEventListener("input",searchTracks);
+$("likedNav").onclick=()=>view("library");
+$("allNav").onclick=()=>{view("home");$("search").value="";searchTracks()};
+$("startBtn").onclick=()=>{loadTrack(0,true)};
+$("playBtn").onclick=togglePlay;
+$("prevBtn").onclick=()=>loadTrack(current<=0?demo.length-1:current-1,true);
+$("nextBtn").onclick=()=>loadTrack(current+1,true);
+$("likeBtn").onclick=()=>{if(current>=0)toggleLike(current)};
+$("volume").oninput=()=>audio.volume=Number($("volume").value);
+$("seek").oninput=()=>{if(Number.isFinite(audio.duration))audio.currentTime=Number($("seek").value)/100*audio.duration};
+audio.addEventListener("timeupdate",()=>{if(Number.isFinite(audio.duration)){$("seek").value=audio.currentTime/audio.duration*100;$("elapsed").textContent=fmt(audio.currentTime);$("duration").textContent=fmt(audio.duration)}});
+audio.addEventListener("ended",()=>loadTrack(current+1,true));
+renderGenres();renderTracks();audio.volume=0.8;
+</script>
+</body>
+</html>
